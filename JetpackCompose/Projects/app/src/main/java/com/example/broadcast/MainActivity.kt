@@ -1,5 +1,6 @@
 package com.example.broadcast
 
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,14 +12,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import com.example.broadcast.ui.theme.BroadcastTheme
 
 class MainActivity : ComponentActivity() {
+    private val myBroadcastReceiver = MyBroadcastReceiver()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             BroadcastTheme {
+                val intentFilter = IntentFilter("android.intent.action.AIRPLANE_MODE")
+                val receiverFlags = ContextCompat.RECEIVER_EXPORTED
+                ContextCompat.registerReceiver(this, myBroadcastReceiver, intentFilter, receiverFlags)
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         name = "Android",
@@ -28,7 +35,13 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(myBroadcastReceiver)
+    }
 }
+
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {

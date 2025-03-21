@@ -40,6 +40,9 @@ android {
 }
 
 dependencies {
+    val core_version = "1.15.0"
+
+    implementation("androidx.core:core-ktx:$core_version")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
